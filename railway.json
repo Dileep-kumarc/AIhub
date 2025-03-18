@@ -3,7 +3,7 @@
     "build": {
       "builder": "NIXPACKS",
       "buildCommand": "pip install --upgrade pip && pip install -r requirements.txt",
-      "pythonVersion": "3.12.0"
+      "pythonVersion": "3.9.7"
     },
     "deploy": {
       "startCommand": "gunicorn app:app",
