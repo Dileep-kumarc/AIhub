@@ -1,0 +1,782 @@
+{% extends 'base1.html' %}
+{% block title %}Submit Tool{% endblock %}
+{% block content %}
+
+<!-- Font Awesome CDN for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    /* Submit Tool Section Styling */
+    .submit-section {
+        padding: 60px 20px;
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        color: #fff;
+    }
+
+    .submit-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    /* Form Styling */
+    .submit-form {
+        flex: 1;
+        min-width: 300px;
+        max-width: 600px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .submit-form h2 {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #00a8ff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        text-align: center;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #ddd;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #00a8ff;
+        box-shadow: 0 0 10px rgba(0, 168, 255, 0.3);
+    }
+
+    .form-group select:focus {
+        background: rgba(0, 168, 255, 0.1);
+    }
+    
+    .form-group select option {
+        background-color: #16213e;
+        color: #fff;
+    }
+
+    .form-group textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .tag-input {
+        margin-bottom: 15px;
+    }
+
+    .tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin: 10px 0;
+    }
+
+    .tag {
+        background: #00a8ff;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 15px;
+        display: inline-flex;
+        align-items: center;
+        font-size: 14px;
+    }
+
+    .tag-remove {
+        margin-left: 8px;
+        cursor: pointer;
+        color: yellow;
+        font-weight: bold;
+    }
+
+    /* Loading and Message Styles */
+    .loading-spinner {
+        text-align: center;
+        padding: 20px;
+        display: none;
+    }
+    
+    .spinner {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(0, 168, 255, 0.2);
+        border-radius: 50%;
+        border-top-color: #00a8ff;
+        animation: spin 1s ease-in-out infinite;
+        margin-bottom: 15px;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    .loading-spinner p {
+        color: #fff;
+        font-size: 1.1rem;
+    }
+    
+    .success-message {
+        text-align: center;
+        background: rgba(40, 167, 69, 0.1);
+        border-left: 4px solid #28a745;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+        display: none;
+    }
+    
+    .success-message i {
+        font-size: 3rem;
+        color: #28a745;
+        margin-bottom: 15px;
+    }
+    
+    .success-message h4 {
+        color: #28a745;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+    }
+    
+    .success-message p {
+        color: #ddd;
+        line-height: 1.6;
+    }
+
+    .error-message {
+        text-align: center;
+        background: rgba(220, 53, 69, 0.1);
+        border-left: 4px solid #dc3545;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+        display: none;
+    }
+
+    .error-message i {
+        font-size: 3rem;
+        color: #dc3545;
+        margin-bottom: 15px;
+    }
+
+    .error-message h4 {
+        color: #dc3545;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+    }
+
+    .error-message p {
+        color: #ddd;
+        line-height: 1.6;
+    }
+
+    .submit-btn {
+        display: block;
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #00a8ff, #0062cc);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+    }
+
+    .submit-btn:hover {
+        background: linear-gradient(135deg, #0062cc, #004080);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Updated Benefits Section */
+    .benefits-section {
+        flex: 1;
+        min-width: 300px;
+        max-width: 400px;
+    }
+
+    .benefits-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+    }
+
+    .benefits-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .benefits-card h3 {
+        font-size: 1.8rem;
+        color: #00a8ff;
+        text-align: center;
+        margin-bottom: 20px;
+        text-shadow: 1px 1px 5px rgba(0, 168, 255, 0.5);
+    }
+
+    .benefits-card h3 i {
+        margin-right: 10px;
+        color: #ffd700; /* Gold accent */
+    }
+
+    .benefit-grid {
+        display: grid;
+        gap: 15px;
+    }
+
+    .benefit-item {
+        display: flex;
+        align-items: flex-start;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 168, 255, 0.05));
+        padding: 15px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .benefit-item:hover {
+        transform: scale(1.03);
+        box-shadow: 0 5px 15px rgba(0, 168, 255, 0.2);
+    }
+
+    .benefit-icon {
+        width: 40px;
+        height: 40px;
+        background: #00a8ff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        color: #fff;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    .benefit-content {
+        flex: 1;
+    }
+
+    .benefit-item h4 {
+        font-size: 1.1rem;
+        color: #fff;
+        margin: 0 0 5px 0;
+    }
+
+    .benefit-item p {
+        font-size: 0.9rem;
+        color: #ddd;
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    .benefits-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+        border: 1px solid rgba(0, 168, 255, 0.1);
+    }
+
+    .benefits-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0, 168, 255, 0.15);
+    }
+
+    .benefits-card h3 {
+        font-size: 1.8rem;
+        color: #00a8ff;
+        text-align: center;
+        margin-bottom: 25px;
+        text-shadow: 1px 1px 5px rgba(0, 168, 255, 0.5);
+        border-bottom: 1px solid rgba(0, 168, 255, 0.2);
+        padding-bottom: 15px;
+    }
+
+    .benefits-card h3 i {
+        margin-right: 10px;
+        color: #ffd700; /* Gold accent */
+    }
+
+    .benefit-item h4 {
+        font-size: 1.1rem;
+        color: #fff;
+        margin: 0 0 5px 0;
+    }
+
+    .benefit-item p {
+        font-size: 0.9rem;
+        color: #ddd;
+        margin: 0;
+    }
+
+    /* Updated Top AI Tools Contact Section */
+    .top-tools-contact {
+        position: relative;
+        margin-top: 40px; /* Adjusted margin for better spacing */
+        z-index: 10;
+        display: flex;
+        justify-content: center;
+        width: 100%; /* Ensure it spans the full width */
+    }
+
+    .contact-card {
+        background: linear-gradient(135deg, #ffd700, #ffaa00); /* Gold gradient */
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        max-width: 400px;
+        text-align: center;
+        transform: translateY(0);
+        transition: transform 0.3s ease;
+        margin: 0 auto; /* Center the card */
+    }
+
+    .contact-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .contact-card h3 {
+        font-size: 1.7rem;
+        color: #1a1a2e;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+
+    .contact-card h3 i {
+        color: #fff;
+        margin-right: 10px;
+    }
+
+    .contact-card p {
+        color: #16213e;
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
+
+    .benefits-list {
+        margin-bottom: 20px;
+    }
+
+    .benefit {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #1a1a2e;
+        font-size: 0.95rem;
+        margin: 10px 0;
+    }
+
+    .benefit i {
+        color: #fff;
+        margin-right: 8px;
+        font-size: 1.1rem;
+    }
+
+    .contact-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 12px 25px;
+        background: #1a1a2e;
+        color: #ffd700;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    .contact-btn:hover {
+        background: #16213e;
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .contact-btn i {
+        margin-right: 8px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .submit-container {
+            flex-direction: column;
+            align-items: center;
+        }
+        .benefits-section {
+            max-width: 100%;
+        }
+        .top-tools-contact {
+            margin-top: 20px;
+        }
+    }
+</style>
+
+<section class="submit-section">
+    <div class="submit-container">
+        <div class="submit-form">
+            <h2>Submit Your AI Tool</h2>
+            <form action="/submit_tool" method="POST">
+                <div class="form-group">
+                    <label for="tool_name">Tool Name *</label>
+                    <input type="text" id="tool_name" name="tool_name" placeholder="Tool Name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category_select">Category *</label>
+                    <select id="category_select" name="category" required>
+                        <option value="">Select Category</option>
+                        <option value="Text to Speech">Text to Speech</option>
+                        <option value="Text to Video">Text to Video</option>
+                        <option value="AI Image Generation">AI Image Generation</option>
+                        <option value="AI Writing Assistants">AI Writing Assistants</option>
+                        <option value="AI Chatbots">AI Chatbots</option>
+                        <option value="AI Data Analysis">AI Data Analysis</option>
+                        <option value="AI Healthcare Tools">AI Healthcare Tools</option>
+                        <option value="AI Music Generation">AI Music Generation</option>
+                        <option value="AI Resume Creator">AI Resume Creator</option>
+                        <option value="AI Tour Planning">AI Tour Planning</option>
+                        <option value="AI Weather Prediction">AI Weather Prediction</option>
+                        <option value="AI Flowchart Drawing">AI Flowchart Drawing</option>
+                        <option value="AI Virtual Assistants">AI Virtual Assistants</option>
+                        <option value="AI in Finance & Banking">AI in Finance & Banking</option>
+                        <option value="AI in Human Resources">AI in Human Resources</option>
+                        <option value="AI in Environmental Conservation">AI in Environmental Conservation</option>
+                        <option value="AI Language Translation">AI Language Translation</option>
+                        <option value="AI in Marketing & Sales">AI in Marketing & Sales</option>
+                        <option value="AI in Sports Analytics">AI in Sports Analytics</option>
+                        <option value="AI in Personalization">AI in Personalization</option>
+                        <option value="AI in Legal Analytics">AI in Legal Analytics</option>
+                        <option value="AI in Content Moderation">AI in Content Moderation</option>
+                        <option value="AI in Document Analysis">AI in Document Analysis</option>
+                        <option value="AI in E-commerce">AI in E-commerce</option>
+                        <option value="AI in EdTech">AI in EdTech</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="custom_category_div" style="display: none;">
+                    <label for="custom_category">Custom Category *</label>
+                    <input type="text" id="custom_category" name="custom_category" placeholder="Enter Custom Category">
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description *</label>
+                    <textarea id="description" name="description" placeholder="Description" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="website">Website URL *</label>
+                    <input type="url" id="website" name="website" placeholder="Website URL" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="image_url">Image URL *</label>
+                    <input type="url" id="image_url" name="image_url" placeholder="Tool Image URL" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="price">Pricing *</label>
+                    <select id="price" name="price" required>
+                        <option value="">Select Pricing Model</option>
+                        <option value="Free">Free</option>
+                        <option value="Freemium">Freemium</option>
+                        <option value="Premium">Premium</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Your Email *</label>
+                    <input type="email" id="email" name="email" placeholder="Your Email" required>
+                </div>
+
+                <div class="form-group tag-input">
+                    <label for="tag_input">Tags (press Enter to add)</label>
+                    <input type="text" id="tag_input" placeholder="Add tags (press Enter to add)">
+                    <div class="tag-list" id="tag_list"></div>
+                    <input type="hidden" name="tags" id="tags_hidden">
+                </div>
+
+                <div id="loading-spinner" class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Submitting your tool...</p>
+                </div>
+
+                <div id="success-message" class="success-message">
+                    <i class="fas fa-check-circle"></i>
+                    <h4>Tool Submitted Successfully!</h4>
+                    <p>Waiting for developer approval.</p>
+                </div>
+
+                <div id="error-message" class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <h4>Submission Failed</h4>
+                    <p>Error submitting tool. Please try again.</p>
+                </div>
+                
+                <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Submit Tool</button>
+            </form>
+        </div>
+        
+        <!-- Top AI Tools Contact Section - Now inside the container, before benefits -->
+        <div class="benefits-section">
+            <!-- Premium placement card first -->
+            <div class="contact-card" style="margin-bottom: 30px;">
+                <h3><i class="fas fa-crown"></i> Shine in Top AI Tools</h3>
+                <p>Grab premium placement on our homepage and outshine the competition.</p>
+                <div class="benefits-list">
+                    <div class="benefit"><i class="fas fa-gem"></i> Top-tier homepage visibility</div>
+                    <div class="benefit"><i class="fas fa-rocket"></i> 5x more clicks & conversions</div>
+                    <div class="benefit"><i class="fas fa-award"></i> Exclusive featured badge</div>
+                    <div class="benefit"><i class="fas fa-clock"></i> Fast-track review process</div>
+                </div>
+                <a href="mailto:dileepkmrc@gmail.com" class="contact-btn">
+                    <i class="fas fa-envelope"></i> Go Premium Now
+                </a>
+            </div>
+            
+            <!-- Benefits card below -->
+            <div class="benefits-card">
+                <h3><i class="fas fa-rocket"></i> Why Submit Your Tool?</h3>
+                <div class="benefit-grid">
+                    <div class="benefit-item">
+                        <div class="benefit-icon"><i class="fas fa-eye"></i></div>
+                        <h4>Increased Visibility</h4>
+                        <p>Reach thousands of AI enthusiasts seeking tools like yours.</p>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon"><i class="fas fa-users"></i></div>
+                        <h4>Targeted Audience</h4>
+                        <p>Connect with a niche community passionate about AI.</p>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon"><i class="fas fa-chart-line"></i></div>
+                        <h4>Boost Traffic</h4>
+                        <p>Drive more clicks and users to your website.</p>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon"><i class="fas fa-bullhorn"></i></div>
+                        <h4>Free Marketing</h4>
+                        <p>Get your tool promoted across our channels.</p>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon"><i class="fas fa-network-wired"></i></div>
+                        <h4>Integration Opportunities</h4>
+                        <p>Connect with complementary AI tools and services.</p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const successMessage = document.getElementById('success-message');
+        const errorMessage = document.getElementById('error-message');
+        const categorySelect = document.getElementById('category_select');
+        const customCategoryDiv = document.getElementById('custom_category_div');
+        const customCategoryInput = document.getElementById('custom_category');
+        const tagInput = document.getElementById('tag_input');
+        const tagList = document.getElementById('tag_list');
+        const tagsHidden = document.getElementById('tags_hidden');
+        let tags = [];
+
+        // Fetch categories for the dropdown
+        fetch('/get_categories')
+            .then(response => response.json())
+            .then(data => {
+                if (data.categories) {
+                    // Store the current selection if any
+                    const currentSelection = categorySelect.value;
+                    
+                    // Keep the first option and "Other" option
+                    const firstOption = categorySelect.options[0];
+                    const otherOption = Array.from(categorySelect.options).find(opt => opt.value === 'Other');
+                    
+                    // Clear existing options
+                    categorySelect.innerHTML = '';
+                    
+                    // Add back the first option
+                    categorySelect.appendChild(firstOption);
+                    
+                    // Add all categories from the server
+                    data.categories.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category;
+                        option.textContent = category;
+                        categorySelect.appendChild(option);
+                    });
+                    
+                    // Add back the "Other" option at the end
+                    if (otherOption) {
+                        categorySelect.appendChild(otherOption);
+                    }
+                    
+                    // Restore the selection if it existed
+                    if (currentSelection) {
+                        categorySelect.value = currentSelection;
+                    }
+                    
+                    // Update the custom category display
+                    toggleCustomCategory();
+                }
+            })
+            .catch(error => console.error('Error fetching categories:', error));
+
+        // Category toggle
+        function toggleCustomCategory() {
+            if (categorySelect.value === 'Other') {
+                customCategoryDiv.style.display = 'block';
+                customCategoryInput.setAttribute('required', 'true');
+            } else {
+                customCategoryDiv.style.display = 'none';
+                customCategoryInput.removeAttribute('required');
+            }
+        }
+        
+        toggleCustomCategory();
+        categorySelect.addEventListener('change', toggleCustomCategory);
+
+        // Tag handling
+        tagInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && this.value.trim() !== '') {
+                event.preventDefault();
+                const tagText = this.value.trim();
+                if (!tags.includes(tagText)) {
+                    tags.push(tagText);
+                    updateTags();
+                }
+                this.value = '';
+            }
+        });
+
+        function updateTags() {
+            tagList.innerHTML = '';
+            tags.forEach(tag => {
+                const tagEl = document.createElement('span');
+                tagEl.className = 'tag';
+                tagEl.innerHTML = `${tag} <span class="tag-remove">×</span>`;
+                tagEl.querySelector('.tag-remove').addEventListener('click', function() {
+                    tags = tags.filter(t => t !== tag);
+                    updateTags();
+                });
+                tagList.appendChild(tagEl);
+            });
+            tagsHidden.value = tags.join(',');
+        }
+
+        // Form submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            loadingSpinner.style.display = 'block';
+
+            const formData = new FormData(this);
+
+            fetch('/submit_tool', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                loadingSpinner.style.display = 'none';
+                if (response.ok) {
+                    successMessage.style.display = 'block';
+                    form.reset();
+                    tags = [];
+                    updateTags();
+                    toggleCustomCategory();
+                    successMessage.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            })
+            .catch(error => {
+                loadingSpinner.style.display = 'none';
+                errorMessage.style.display = 'block';
+                errorMessage.scrollIntoView({ behavior: 'smooth' });
+                console.error('Error:', error);
+            });
+        });
+        
+        // Refresh categories every 5 minutes to keep the dropdown updated
+        setInterval(() => {
+            fetch('/get_categories')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.categories) {
+                        // Store the current selection
+                        const currentSelection = categorySelect.value;
+                        
+                        // Keep the first option and "Other" option
+                        const firstOption = categorySelect.options[0];
+                        const otherOption = Array.from(categorySelect.options).find(opt => opt.value === 'Other');
+                        
+                        // Clear existing options
+                        categorySelect.innerHTML = '';
+                        
+                        // Add back the first option
+                        categorySelect.appendChild(firstOption);
+                        
+                        // Add all categories from the server
+                        data.categories.forEach(category => {
+                            const option = document.createElement('option');
+                            option.value = category;
+                            option.textContent = category;
+                            categorySelect.appendChild(option);
+                        });
+                        
+                        // Add back the "Other" option at the end
+                        if (otherOption) {
+                            categorySelect.appendChild(otherOption);
+                        }
+                        
+                        // Restore the selection if it existed
+                        if (currentSelection) {
+                            categorySelect.value = currentSelection;
+                        }
+                    }
+                })
+                .catch(error => console.error('Error refreshing categories:', error));
+        }, 300000); // 5 minutes
+    });
+</script>
+{%endblock%}

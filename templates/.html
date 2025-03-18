@@ -1,0 +1,44 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const chatToggleBtn = document.getElementById('chatToggleBtn');
+    const closeChatBtn = document.getElementById('closeChatBtn');
+    const pinChatBtn = document.getElementById('pinChatBtn');
+    const chatHeader = document.getElementById('chatHeader');
+    const chatContainer = document.getElementById('chatContainer');
+    const sendMessageBtn = document.getElementById('sendMessageBtn');
+    const chatIntro = document.querySelector('.chat-intro');
+
+    // Remove these event listeners since we want the intro always visible
+    // chatToggleBtn.addEventListener('mouseenter', function() {
+    //     chatIntro.classList.add('visible');
+    // });
+    // chatToggleBtn.addEventListener('mouseleave', function() {
+    //     setTimeout(() => {
+    //         if (!chatContainer.classList.contains('active')) {
+    //             chatIntro.classList.remove('visible');
+    //         }
+    //     }, 1000);
+    // });
+
+    // Toggle chat open/close with animation
+    function toggleChat() {
+        const chatContainer = document.getElementById('chatContainer');
+        const toggleBtn = document.getElementById('chatToggleBtn');
+        chatContainer.classList.toggle('active');
+        toggleBtn.classList.toggle('active');
+        
+        // Hide intro with animation when chat is open
+        if (chatContainer.classList.contains('active')) {
+            chatIntro.classList.add('hidden');
+        } else {
+            // Show intro with animation when chat is closed
+            setTimeout(() => {
+                chatIntro.classList.remove('hidden');
+            }, 300); // Small delay for better visual effect
+        }
+    }
+    
+    // Toggle chat open/close
+    chatToggleBtn.addEventListener('click', toggleChat);
+    closeChatBtn.addEventListener('click', toggleChat);
+    
+    // Rest of the chat functionality remains the same
